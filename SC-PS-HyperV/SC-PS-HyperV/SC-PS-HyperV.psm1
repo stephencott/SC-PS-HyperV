@@ -22,7 +22,7 @@ function Clone-VM {
 	try {
 		$templateVM = get-vm -Name $template -ErrorAction Stop
 	} catch {
-		Write-Host "Error: Could not find template VM: $template"
+		Write-Host -ForeGroundColor Red "Error: Could not find template VM: $template"
 		Break
 	}
 
