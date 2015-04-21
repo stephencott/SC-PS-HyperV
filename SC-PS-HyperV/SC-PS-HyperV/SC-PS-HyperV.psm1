@@ -21,8 +21,8 @@ function Clone-VM {
 
 	try {
 		$templateVM = get-vm -Name $template
-	} catch{
-		"Error: Could not find template VM"
+	} catch {
+		Write-output "Error: Could not find template VM: $template"
 	}
 
 	Try {
