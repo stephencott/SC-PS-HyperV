@@ -1,7 +1,7 @@
 <#
-	Clone-VM
+	New-CloneVM
 #>
-function Clone-VM {
+function New-CloneVM {
 	
 	[CmdletBinding()]
 	Param(
