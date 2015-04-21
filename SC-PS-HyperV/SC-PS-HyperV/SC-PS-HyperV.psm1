@@ -19,15 +19,17 @@ function Clone-VM {
 	$vmPath = $VMHost.VirtualMachinePath
 	$vhdPath = "Virtual Hard Disks"
 
-	try{
+	try {
 		$templateVM = get-vm -Name $template
-		}
-	catch{
+	} catch{
 		"Error: Could not find template VM"
-		}
+	}
 
-	$newVHD = "$vmPath\$vmName\$vhdPath\$vmName.vhdx"
-
+	Try {
+		$newVHD = "$vmPath\$vmName\$vhdPath\$vmName.vhdx"
+	} catch {
+		"Error: Unable to create .vhdx"
+	}
 	$parVMPath = $templateVM.HardDrives[0].Path
 
 	New-Item -Path $VMPath -ItemType Directory -Name $vmName
