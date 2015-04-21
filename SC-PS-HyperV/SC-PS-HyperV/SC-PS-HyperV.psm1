@@ -42,7 +42,7 @@ function New-CloneVM {
 
 	New-VHD -Path "$vmPath\$vmName\$vhdPath\$vmName.vhdx" -ParentPath $parVMPath -Differencing
 
-	New-VM -Name $vmName -MemoryStartupBytes $templateVM.MemoryStartup -SwitchName $templateVM.NetworkAdapters[0].SwitchName -Generation 2 -Path "$VMPath\$vmName"
+	New-VM -Name $vmName -MemoryStartupBytes $templateVM.MemoryStartup -SwitchName $templateVM.NetworkAdapters[0].SwitchName -Generation 2 -Path "$VMPath"
 
 	Add-VMHardDiskDrive -VMName $vmName -Path $newVHD -ControllerType SCSI
 
