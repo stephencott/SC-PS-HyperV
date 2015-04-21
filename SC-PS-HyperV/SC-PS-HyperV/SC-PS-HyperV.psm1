@@ -20,9 +20,9 @@ function Clone-VM {
 	$vhdPath = "Virtual Hard Disks"
 
 	try {
-		$templateVM = get-vm -Name $template
+		$templateVM = get-vm -Name $template -ErrorAction Stop
 	} catch {
-		Write-output "Error: Could not find template VM: $template"
+		Write-Host "Error: Could not find template VM: $template"
 	}
 
 	Try {
@@ -38,7 +38,7 @@ function Clone-VM {
 
 	New-VHD -Path "$vmPath\$vmName\$vhdPath\$vmName.vhdx" -ParentPath $parVMPath -Differencing
 
-	New-VM -Name $vmName -MemoryStartupBytes $templateVM.MemoryStartup -SwitchName $templateVM.NetworkAdapters[0].SwitchName -Generation 2
+	New-VM -Name $vmName -MemoryStartupBytes $templateVM.MemoryStartup -SwitchName $templateVM.NetworkAdapters[0].SwitchName -Generation 2 -Path "$VMPath\$vmName"
 
 	Add-VMHardDiskDrive -VMName $vmName -Path $newVHD -ControllerType SCSI
 

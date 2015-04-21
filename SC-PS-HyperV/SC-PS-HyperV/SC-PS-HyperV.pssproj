@@ -8,6 +8,13 @@
     <RootNamespace>MyApplication</RootNamespace>
     <AssemblyName>MyApplication</AssemblyName>
     <Name>SC-PS-HyperV</Name>
+    <Author>Stephen Cott</Author>
+    <CompanyName />
+    <Copyright />
+    <Description />
+    <Guid>c326cc8b-7ff2-434d-af7f-afd66d6fc21a</Guid>
+    <DebugArguments>
+    </DebugArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
