@@ -19,23 +19,26 @@ function New-CloneVM {
 	$vmPath = $VMHost.VirtualMachinePath
 	$vhdPath = "Virtual Hard Disks"
 
+	#Get a reference to the VM to be copied. Stop the script if there is an 
+	#error
 	try {
-		$templateVM = get-vm -Name $template -ErrorAction Stop
+		$templateVM = Get-VM -Name $template -ErrorAction Stop
 	} catch {
 		Write-Host -ForeGroundColor Red "Error: Could not find template VM: $template"
 		Break
 	}
 
-	Try {
-		$newVHD = "$vmPath\$vmName\$vhdPath\$vmName.vhdx"
-	} catch {
-		"Error: Unable to create .vhdx"
-	}
+	#Set the path to the new VHD and the path to the Parent VHD to difference
+	#Possibly add the ability to clone all Hard Disks associated to the VM
+	$newVHD = "$vmPath\$vmName\$vhdPath\$vmName.vhdx"
 	$parVMPath = $templateVM.HardDrives[0].Path
 
-	New-Item -Path $VMPath -ItemType Directory -Name $vmName
-
-	New-Item -Path "$VMPath\$vmName" -ItemType Directory -Name $vhdPath
+	Try {
+		New-Item -Path $VMPath -ItemType Directory -Name $vmName
+		New-Item -Path "$VMPath\$vmName" -ItemType Directory -Name $vhdPath
+	} catch {
+		Write-Output "Unable to create directory: $($_.ToString())"
+	}
 
 	New-VHD -Path "$vmPath\$vmName\$vhdPath\$vmName.vhdx" -ParentPath $parVMPath -Differencing
 
