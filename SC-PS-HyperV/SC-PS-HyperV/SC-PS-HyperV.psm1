@@ -1,7 +1,7 @@
 <#
-	My Function
+	Clone-VM
 #>
-function Get-Function {
+function Clone-VM {
 	
 	[CmdletBinding()]
 	Param(
@@ -22,7 +22,7 @@ function Get-Function {
 		$templateVM = get-vm -Name $template
 		}
 	catch{
-		" Error: Could not find template VM"
+		"Error: Could not find template VM"
 		}
 
 	$newVHD = "$vmPath\$vmName\$vhdPath\$vmName.vhdx"
