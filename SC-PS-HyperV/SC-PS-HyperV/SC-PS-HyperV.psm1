@@ -10,10 +10,11 @@ function Clone-VM {
 		[Parameter(Mandatory=$TRUE)]
 			[string]$template,
 		[string]$vmPath,
-		[string]$vhdpath
+		[string]$vhdpath,
+		[String]$VMHostName="$env:COMPUTERNAME"
 		)
 
-	$VMHost = Get-VMHost
+	$VMHost = Get-VMHost -computerName $VMHostName
 
 	$vmPath = $VMHost.VirtualMachinePath
 	$vhdPath = "Virtual Hard Disks"
