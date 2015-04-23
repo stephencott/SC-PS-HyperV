@@ -11,16 +11,17 @@ function New-CloneVM {
 			[string]$template,
 		[string]$vmPath,
 		[string]$vhdpath,
-		[String]$VMHostName="$env:COMPUTERNAME"
+		[String]$VMHostName="$env:COMPUTERNAME",
+		[Int]$gen=2
 		)
 
 	$VMHost = Get-VMHost -computerName $VMHostName
+	$vmConType = Get-VMHardDiskDrive -VMName $VMHostName | Select-Object -ExpandProperty ControllerType
 
 	$vmPath = $VMHost.VirtualMachinePath
 	$vhdPath = "Virtual Hard Disks"
 
-	#Get a reference to the VM to be copied. Stop the script if there is an 
-	#error
+	#Get a reference to the VM to be copied. Stop the script if there is an error
 	try {
 		$templateVM = Get-VM -Name $template -ErrorAction Stop
 	} catch {
@@ -34,17 +35,27 @@ function New-CloneVM {
 	$parVMPath = $templateVM.HardDrives[0].Path
 
 	Try {
-		New-Item -Path $VMPath -ItemType Directory -Name $vmName
-		New-Item -Path "$VMPath\$vmName" -ItemType Directory -Name $vhdPath
-	} catch {
-		Write-Output "Unable to create directory: $($_.ToString())"
+		New-VHD -Path "$vmPath\$vmName\$vhdPath\$vmName.vhdx" `
+			-ParentPath $parVMPath `
+			-Differencing `
+			-ErrorAction Stop
+	} Catch {
+		Write-Output "Unable to create VHD: $vmPath\$vmName\$vhdPath\$vmName.vhdx"
 	}
 
-	New-VHD -Path "$vmPath\$vmName\$vhdPath\$vmName.vhdx" -ParentPath $parVMPath -Differencing
+	Try {
+		New-VM -Name $vmName `
+			-MemoryStartupBytes $templateVM.MemoryStartup `
+			-SwitchName $templateVM.NetworkAdapters[0].SwitchName `
+			-Generation $gen `
+			-Path "$VMPath" `
+			-ErrorAction Stop
+	} Catch {
+		Write-Output "Unable to create VM: $vmName at path $vmPath"
+	}
 
-	New-VM -Name $vmName -MemoryStartupBytes $templateVM.MemoryStartup -SwitchName $templateVM.NetworkAdapters[0].SwitchName -Generation 2 -Path "$VMPath"
 
-	Add-VMHardDiskDrive -VMName $vmName -Path $newVHD -ControllerType SCSI
+	Add-VMHardDiskDrive -VMName $vmName -Path $newVHD -ControllerType $vmConType
 
 	Add-VMDvdDrive -VMName $vmName
 
