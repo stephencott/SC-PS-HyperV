@@ -15,8 +15,22 @@ function New-CloneVM {
 		[Int]$gen=2
 		)
 
-	$VMHost = Get-VMHost -computerName $VMHostName
-	$vmConType = Get-VMHardDiskDrive -VMName $VMHostName | Select-Object -ExpandProperty ControllerType
+	#Get the VM we are cloning
+	Try {
+		$VMHost = Get-VMHost -computerName $VMHostName -ErrorAction Stop
+	} 
+	Catch {
+		Write-Output "Unable to open VM: $VMHostName"
+	}
+
+	#Get all disks on the template
+	Try {
+		$vmDisks = Get-VMHardDiskDrive -VM $VMHost -ErrorAction Stop
+	}
+	Catch {
+		Write-Output "Unable to enumerate disks for VM: $VMHostName"
+	}
+	#$vmConType = Get-VMHardDiskDrive -VMName $VMHostName | Select-Object -ExpandProperty ControllerType
 
 	$vmPath = $VMHost.VirtualMachinePath
 	$vhdPath = "Virtual Hard Disks"
